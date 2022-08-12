@@ -2,19 +2,19 @@ package com.example.student;
 
 public class Student {
 
-    private long int id;
-    private String name;
-    private int age;
-    private double grade;
+    private final long id;
+    private final String name;
+    private final int age;
+    private final double grade;
 
-    public Student(int id, String name, int age, double grade) {
+    public Student(long id, String name, int age, double grade) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.grade = grade;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
