@@ -1,18 +1,22 @@
 package com.example.student;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
-@RestController
+@RestController("/student")
 public class StudentController {
 
     private LinkedList<Student> stus = new LinkedList<>();
     private final AtomicLong counter = new AtomicLong();
 
-    @GetMapping("/students")
+    @GetMapping("/all")
     public Student[] students(@RequestParam(value = "limit", defaultValue = "10") int limit){
         int stuCount = stus.size();
         if (limit > stuCount){
@@ -27,13 +31,18 @@ public class StudentController {
         return ret;
     }
 
-    @GetMapping("/student")
-    public Student get(@RequestParam long id){
-        id--;   
+    @GetMapping("/{id}")
+    public Student get(@PathVariable long id, HttpServletResponse response){
+        if(id> stus.size()){
+            response.setStatus(404);
+            response.setHeader("message", "Data not found.");
+            return null;
+        }
+        id--;
         return stus.get((int)id);
     }
 
-    @PostMapping("/register-student")
+    @PostMapping("/register")
     public Student register(@RequestBody ObjectNode data){
         Student stu = new Student(counter.incrementAndGet(),
                 data.get("name").asText(),
@@ -43,33 +52,54 @@ public class StudentController {
         return stu;
     }
 
-    @PutMapping("/update-student")
-    public Student update(@RequestBody ObjectNode data){
-        long id = data.get("id").asLong();
-        id--;
-        Student currStu = stus.get((int)id);
-        String name = currStu.getName();
-        int age = currStu.getAge();
-        double grade = currStu.getGrade();
-        if( data.has("name")){
-            name = data.get("name").asText();
-        }if( data.has("age")){
-            age = data.get("age").asInt();
-        }if( data.has("grade")){
-            grade = data.get("grade").asDouble();
+    @PostMapping("/generate")
+    public ResponseEntity<String> generate(){
+        if(stus.size()>0){
+            return new ResponseEntity<>("Can not change real data.", HttpStatus.BAD_REQUEST);
         }
-        Student stu = new Student(id+1,name,age,grade);
+        stus.add(new Student(counter.incrementAndGet(),"Mike",20,15.5));
+        stus.add(new Student(counter.incrementAndGet(),"Jeffery",18,18.5));
+        stus.add(new Student(counter.incrementAndGet(),"Alison",19,11.75));
+        stus.add(new Student(counter.incrementAndGet(),"Scott",22,14));
+        stus.add(new Student(counter.incrementAndGet(),"Bruce",21,20));
+        return new ResponseEntity<>("Successfuly generated new data.", HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/update")
+    public Student update(@PathVariable long id, @RequestBody Student data){
+
+        if(id>stus.size()){
+            throw new StudentNotFoundException();
+        }
+        id--;
+//        Student currStu = stus.get((int)id);
+//        String name = currStu.getName();
+//        int age = currStu.getAge();
+//        double grade = currStu.getGrade();
+//        if( data.has("name")){
+//            name = data.get("name").asText();
+//        }if( data.has("age")){
+//            age = data.get("age").asInt();
+//        }if( data.has("grade")){
+//            grade = data.get("grade").asDouble();
+//        }
+//        Student stu = new Student(id+1,name,age,grade);
         stus.remove((int)id);
-        stus.add((int)id, stu);
+        stus.add((int)id, data);
         return stus.get((int)id);
     }
 
-    @DeleteMapping("/delete-student")
-    public Student delete(@RequestParam long id){
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<Student> delete(@PathVariable long id){
+        if(id>stus.size()){
+            HttpHeaders header = new HttpHeaders();
+            header.add("message","No data with given id.");
+            return new ResponseEntity<>(null, header, HttpStatus.NOT_FOUND);
+        }
         id--;
         Student stu = stus.get((int)id);
         stus.remove((int)id);
-        return stu;
+        return new ResponseEntity<>(stu, HttpStatus.OK);
     }
 
 }
