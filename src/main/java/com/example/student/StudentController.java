@@ -10,14 +10,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
-@RestController("/student")
+@RestController
+@RequestMapping("/student")
 public class StudentController {
 
     private LinkedList<Student> stus = new LinkedList<>();
     private final AtomicLong counter = new AtomicLong();
 
     @GetMapping("/all")
-    public Student[] students(@RequestParam(value = "limit", defaultValue = "10") int limit){
+    public Student[] students(@RequestParam(value = "limit", defaultValue = "10") int limit,
+                              @RequestHeader HttpHeaders headers){
+        if(headers.get("Auth") == null){
+            throw new AccessForbiddenException();
+        }
         int stuCount = stus.size();
         if (limit > stuCount){
             limit = stuCount;
@@ -72,18 +77,7 @@ public class StudentController {
             throw new StudentNotFoundException();
         }
         id--;
-//        Student currStu = stus.get((int)id);
-//        String name = currStu.getName();
-//        int age = currStu.getAge();
-//        double grade = currStu.getGrade();
-//        if( data.has("name")){
-//            name = data.get("name").asText();
-//        }if( data.has("age")){
-//            age = data.get("age").asInt();
-//        }if( data.has("grade")){
-//            grade = data.get("grade").asDouble();
-//        }
-//        Student stu = new Student(id+1,name,age,grade);
+
         stus.remove((int)id);
         stus.add((int)id, data);
         return stus.get((int)id);
