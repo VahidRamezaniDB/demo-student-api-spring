@@ -1,5 +1,7 @@
 package com.example.student.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,6 +17,7 @@ public class Manager {
 
     @OneToOne
     @JoinColumn(name = "school_id")
+    @JsonBackReference
     private School school;
 
 

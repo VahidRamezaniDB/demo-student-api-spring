@@ -1,6 +1,7 @@
 package com.example.student.controller;
 
 import com.example.student.exception.AccessForbiddenException;
+import com.example.student.model.Manager;
 import com.example.student.model.School;
 import com.example.student.model.Student;
 import com.example.student.repository.StudentRepository;
@@ -63,6 +64,11 @@ public class StudentController {
     @GetMapping("/{id}/classmates")
     public ResponseEntity<List<Student>> getClassmates(@PathVariable long id){
         return new ResponseEntity<>(studentService.getClassmates(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/manager")
+    public ResponseEntity<Manager> getManager(@PathVariable long id){
+        return new ResponseEntity<>(studentService.getManager(id), HttpStatus.OK);
     }
 
 }

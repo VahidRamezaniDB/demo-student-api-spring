@@ -27,7 +27,8 @@ public class School {
     private List<Student> students;
 
     @OneToOne(mappedBy = "school")
-    @JsonIgnoreProperties("school")
+//    @JsonIgnoreProperties("school")
+    @JsonManagedReference
     private Manager manager;
 
     public School(String name, String address, List<Student> students, Manager manager) {

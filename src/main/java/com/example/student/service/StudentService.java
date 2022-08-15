@@ -3,6 +3,7 @@ package com.example.student.service;
 import com.example.student.exception.InternalServerException;
 import com.example.student.exception.NoContentException;
 import com.example.student.exception.StudentNotFoundException;
+import com.example.student.model.Manager;
 import com.example.student.model.School;
 import com.example.student.model.Student;
 import com.example.student.repository.StudentRepository;
@@ -131,5 +132,14 @@ public class StudentService {
             throw new StudentNotFoundException();
         }
         return _students;
+    }
+
+    public Manager getManager(long id){
+        studentRepository.findById(id).orElseThrow(StudentNotFoundException::new);
+        try{
+            return studentRepository.getManager(id);
+        }catch (Exception e){
+            throw new InternalServerException();
+        }
     }
 }
