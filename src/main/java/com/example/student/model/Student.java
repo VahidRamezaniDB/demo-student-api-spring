@@ -1,5 +1,8 @@
 package com.example.student.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,10 +19,17 @@ public class Student {
     @Column(name = "grade")
     private double grade;
 
-    public Student(String name, int age, double grade) {
+    @ManyToOne()
+    @JoinColumn(name = "school_id")
+//    @JsonIgnoreProperties("students")
+    @JsonBackReference
+    private School school;
+
+    public Student(String name, int age, double grade, School school) {
         this.name = name;
         this.age = age;
         this.grade = grade;
+        this.school = school;
     }
 
     public Student() {
@@ -38,6 +48,10 @@ public class Student {
         this.grade = grade;
     }
 
+    public void setSchool(School school) {
+        this.school = school;
+    }
+
     public long getId() {
         return id;
     }
@@ -52,5 +66,9 @@ public class Student {
 
     public double getGrade() {
         return grade;
+    }
+
+    public School getSchool() {
+        return school;
     }
 }

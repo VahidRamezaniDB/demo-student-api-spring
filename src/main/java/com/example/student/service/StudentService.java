@@ -3,6 +3,7 @@ package com.example.student.service;
 import com.example.student.exception.InternalServerException;
 import com.example.student.exception.NoContentException;
 import com.example.student.exception.StudentNotFoundException;
+import com.example.student.model.School;
 import com.example.student.model.Student;
 import com.example.student.repository.StudentRepository;
 import org.springframework.http.HttpHeaders;
@@ -65,7 +66,7 @@ public class StudentService {
     public Student registerStudent(Student student){
         try{
             return studentRepository.save(
-                    new Student(student.getName(), student.getAge(),student.getGrade()));
+                    new Student(student.getName(), student.getAge(),student.getGrade(), student.getSchool()));
         }catch (Exception e){
             throw new InternalServerException();
         }
@@ -101,5 +102,34 @@ public class StudentService {
         }catch (Exception e){
             throw new InternalServerException();
         }
+    }
+
+    public School getStudentSchool(long id){
+        Student _student;
+        try{
+            _student = studentRepository.getStudentById(id);
+        }catch (Exception e){
+            throw new InternalServerException();
+        }
+        if(_student == null){
+            throw new StudentNotFoundException();
+        }
+        return _student.getSchool();
+    }
+
+    public List<Student> getClassmates(long id){
+        List<Student> _students;
+        try{
+            studentRepository.findById(id).orElseThrow(StudentNotFoundException::new);
+            _students = studentRepository.getClassmates(id);
+        }catch (StudentNotFoundException e){
+            throw new StudentNotFoundException();
+        }catch (Exception e){
+            throw new InternalServerException();
+        }
+        if(_students == null || _students.size() == 0){
+            throw new StudentNotFoundException();
+        }
+        return _students;
     }
 }
