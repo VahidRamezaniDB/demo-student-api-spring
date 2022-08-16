@@ -19,7 +19,7 @@ public class Student {
     @Column(name = "grade")
     private double grade;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
 //    @JsonIgnoreProperties("students")
     @JsonBackReference
