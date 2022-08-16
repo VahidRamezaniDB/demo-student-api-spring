@@ -7,6 +7,11 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import java.util.List;
 
+@NamedEntityGraph(name = "School.students",
+    attributeNodes = @NamedAttributeNode("students"))
+@org.hibernate.annotations.NamedNativeQuery(name = "School.findTopStudent",
+query = "SELECT *  FROM student WHERE school_id = :id ORDER BY grade DESC LIMIT 1",
+resultClass = Student.class)
 @Entity
 @Table(name = "school")
 public class School {
@@ -21,7 +26,7 @@ public class School {
     @Column(name = "address")
     private String address;
 
-    @OneToMany(mappedBy = "school")
+    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
 //    @JsonIgnoreProperties("school")
     @JsonManagedReference
     private List<Student> students;
