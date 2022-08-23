@@ -13,6 +13,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Student getStudentById(Long id);
 
+
     @Query(value = "select * from student left join school s on s.id = student.school_id " +
             "where student.school_id = (select school_id from student where id = ?1)",
             nativeQuery = true)
@@ -21,4 +22,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("select c.manager from Student s join s.school c where s.id = :id")
     Manager getManager(Long id);
 
+    @Query(value = "select AVG(grade) from student",nativeQuery = true)
+    double getAvgGrade();
 }

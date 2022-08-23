@@ -1,5 +1,6 @@
 package com.example.student.controller;
 
+import com.example.student.dto.TopStudentDTO;
 import com.example.student.exception.AccessForbiddenException;
 import com.example.student.model.Manager;
 import com.example.student.model.School;
@@ -69,6 +70,11 @@ public class StudentController {
     @GetMapping("/{id}/manager")
     public ResponseEntity<Manager> getManager(@PathVariable long id){
         return new ResponseEntity<>(studentService.getManager(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/top")
+    public ResponseEntity<List<TopStudentDTO>> getTopStudents(){
+        return new ResponseEntity<>(studentService.getTopStudents(), HttpStatus.OK);
     }
 
 }

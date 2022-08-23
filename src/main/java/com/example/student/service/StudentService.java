@@ -1,5 +1,6 @@
 package com.example.student.service;
 
+import com.example.student.dto.TopStudentDTO;
 import com.example.student.exception.InternalServerException;
 import com.example.student.exception.NoContentException;
 import com.example.student.exception.StudentNotFoundException;
@@ -12,16 +13,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class StudentService {
 
     private StudentRepository studentRepository;
+    private EntityManager entityManager;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, EntityManager entityManager) {
         this.studentRepository = studentRepository;
+        this.entityManager = entityManager;
     }
 
     public List<Student> getAllStudents(){
@@ -141,5 +148,16 @@ public class StudentService {
         }catch (Exception e){
             throw new InternalServerException();
         }
+    }
+
+    public List<TopStudentDTO> getTopStudents(){
+        Query query = entityManager.createQuery("select s from Student s", Student.class);
+        List<Student>  students = query.getResultList();
+        Stream<Student> studentStream = students.stream().filter(student -> student.getGrade() > 15);
+        List<TopStudentDTO> ret = studentStream.
+                map(student -> TopStudentDTO.convertToDto(student.getName(),student.getSchool()))
+                .collect(Collectors.toList());
+        return ret;
+
     }
 }
