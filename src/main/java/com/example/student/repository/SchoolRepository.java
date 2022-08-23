@@ -4,6 +4,7 @@ import com.example.student.model.School;
 import com.example.student.model.Student;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface SchoolRepository extends JpaRepository<School, Long> {
 
     Student findTopStudent(long id);
 
-    School getSchoolByName(String name);
+    @Query("select s from School s join fetch s.students where s.id = ?1")
+    School getSchoolWithStudentsByID(long id);
+
 }

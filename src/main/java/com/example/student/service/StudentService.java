@@ -164,9 +164,20 @@ public class StudentService {
 
     public Map<String, List<Student>> getTopStudentsMap(){
 
-        return studentRepository.findAll().stream().filter(student -> student.getGrade() > 15)
+//        List<School> temp = studentRepository.findAll().stream().filter(student -> student.getGrade() > 15)
+//                .map(Student::getSchool).collect(Collectors.toList());
+//        return temp.stream().collect(Collectors.toMap(School::getName, School::getStudents,
+//                (existing, replacement) -> existing));
+
+        return studentRepository.getAllStudents().stream().filter(student -> student.getGrade() > 15)
                 .map(Student::getSchool)
-                .collect(Collectors.toMap(School::getName, School::getStudents,
+                .collect(Collectors.toMap(School::getName,
+                        school -> schoolRepository.getSchoolWithStudentsByID(school.getId()).getStudents(),
                         (existing, replacement) -> existing));
+//
+//        return studentRepository.findAll().stream().filter(student -> student.getGrade() > 15)
+//                .map(Student::getSchool)
+//                .collect(Collectors.toMap(School::getName, School::getStudents,
+//                        (existing, replacement) -> existing));
     }
 }

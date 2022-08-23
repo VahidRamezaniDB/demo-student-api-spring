@@ -24,4 +24,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query(value = "select AVG(grade) from student",nativeQuery = true)
     double getAvgGrade();
+
+    @Query("select s from Student s join fetch s.school")
+    List<Student> getAllStudents();
 }
