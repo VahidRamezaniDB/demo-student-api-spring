@@ -15,4 +15,6 @@ public interface SchoolRepository extends JpaRepository<School, Long> {
     School getSchoolById(long id);
 
     Student findTopStudent(long id);
+
+    School getSchoolByName(String name);
 }

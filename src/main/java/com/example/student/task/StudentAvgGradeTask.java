@@ -11,7 +11,7 @@ public class StudentAvgGradeTask {
         this.studentRepository = studentRepository;
     }
 
-    @Scheduled(fixedDelay = 300000)
+    @Scheduled(fixedDelay = 3000)
     public void logAvgGrade(){
         System.out.println("Student Average: " + studentRepository.getAvgGrade());
     }

@@ -7,6 +7,7 @@ import com.example.student.exception.StudentNotFoundException;
 import com.example.student.model.Manager;
 import com.example.student.model.School;
 import com.example.student.model.Student;
+import com.example.student.repository.SchoolRepository;
 import com.example.student.repository.StudentRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,10 +25,11 @@ public class StudentService {
 
     private StudentRepository studentRepository;
     private EntityManager entityManager;
-
-    public StudentService(StudentRepository studentRepository, EntityManager entityManager) {
+    private SchoolRepository schoolRepository;
+    public StudentService(StudentRepository studentRepository, EntityManager entityManager, SchoolRepository schoolRepository) {
         this.studentRepository = studentRepository;
         this.entityManager = entityManager;
+        this.schoolRepository = schoolRepository;
     }
 
     public List<Student> getAllStudents(){
@@ -159,5 +160,13 @@ public class StudentService {
                 .collect(Collectors.toList());
         return ret;
 
+    }
+
+    public Map<String, List<Student>> getTopStudentsMap(){
+
+        return studentRepository.findAll().stream().filter(student -> student.getGrade() > 15)
+                .map(Student::getSchool)
+                .collect(Collectors.toMap(School::getName, School::getStudents,
+                        (existing, replacement) -> existing));
     }
 }

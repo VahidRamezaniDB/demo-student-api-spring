@@ -12,7 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student")
@@ -77,4 +81,8 @@ public class StudentController {
         return new ResponseEntity<>(studentService.getTopStudents(), HttpStatus.OK);
     }
 
+    @GetMapping("/top-map")
+    public ResponseEntity<Map<String, List<Student>>> getTopStudentMap(){
+        return new ResponseEntity<>(studentService.getTopStudentsMap(), HttpStatus.OK);
+    }
 }
