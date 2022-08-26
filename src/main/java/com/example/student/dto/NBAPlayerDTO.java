@@ -2,9 +2,7 @@ package com.example.student.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.http.ResponseEntity;
 
 public class NBAPlayerDTO {
@@ -42,7 +40,7 @@ public class NBAPlayerDTO {
         return teamName;
     }
 
-    public static NBAPlayerDTO ConvertToDto(ResponseEntity<String> response){
+    public static NBAPlayerDTO convertToDto(ResponseEntity<String> response){
         ObjectMapper mapper = new ObjectMapper();
 
         try {

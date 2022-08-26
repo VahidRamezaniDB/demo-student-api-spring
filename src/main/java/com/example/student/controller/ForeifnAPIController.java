@@ -1,6 +1,7 @@
 package com.example.student.controller;
 
 import com.example.student.dto.NBAPlayerDTO;
+import com.example.student.dto.NBATeamDTO;
 import com.example.student.service.ForeignAPIService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,13 @@ public class ForeifnAPIController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/player/{id}")
     public ResponseEntity<NBAPlayerDTO> getNBAPlayer(@PathVariable long id){
         return new ResponseEntity<>(foreignAPIService.getPlayer(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/team/{id}")
+    public ResponseEntity<NBATeamDTO> getNBATeam(@PathVariable long id){
+        return new ResponseEntity<>(foreignAPIService.getTeam(id), HttpStatus.OK);
     }
 }
