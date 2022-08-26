@@ -40,16 +40,16 @@ public class CustomRunner implements CommandLineRunner {
 
     @PostConstruct
     public void postConstructSampleMethod(){
-        School school = schoolService.getSchoolById(2);
-        if(school != null) {
-            Student student = studentService.registerStudent(new Student("Fredric", 19, 17.75, school));
-            System.out.println("\t" + "id: " + student.getId());
-            System.out.println("\t" + "name: " + student.getName());
-            System.out.println("\t" + "grade: " + student.getGrade());
-            System.out.println("\t" + "age: " + student.getAge());
-            System.out.println();
-        }else {
-            System.out.println("Here");
-        }
+//        School school = schoolService.getSchoolById(2);
+//        if(school != null) {
+//            Student student = studentService.registerStudent(new Student("Fredric", 19, 17.75, school));
+//            System.out.println("\t" + "id: " + student.getId());
+//            System.out.println("\t" + "name: " + student.getName());
+//            System.out.println("\t" + "grade: " + student.getGrade());
+//            System.out.println("\t" + "age: " + student.getAge());
+//            System.out.println();
+//        }else {
+//            System.out.println("Here");
+//        }
     }
 }

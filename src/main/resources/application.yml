@@ -14,3 +14,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+nbaApi:
+  player:
+    url: http://www.balldontlie.io/api/v1/players/
+  team:
+    url: http://www.balldontlie.io/api/v1/teams/
