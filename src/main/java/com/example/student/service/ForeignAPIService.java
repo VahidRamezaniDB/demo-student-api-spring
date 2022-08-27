@@ -4,20 +4,23 @@ import com.example.student.configuration.NbaApiConfiguration;
 import com.example.student.dto.NBAPlayerDTO;
 import com.example.student.dto.NBATeamDTO;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
 @Service
 public class ForeignAPIService {
 
-    @Value("${nbaApi.player.url}")
+    @Value("${nba.player_url}")
     private String resourceUrl;
+    private NbaApiConfiguration nbaApiConfiguration;
+
     public ForeignAPIService(NbaApiConfiguration nbaApiConfiguration) {
         this.nbaApiConfiguration = nbaApiConfiguration;
     }
 
-    private NbaApiConfiguration nbaApiConfiguration;
 
     public NBAPlayerDTO getPlayer(long id){
         RestTemplate restTemplate = new RestTemplate();
@@ -35,18 +38,18 @@ public class ForeignAPIService {
     }
 
     public NBATeamDTO getTeam(long id){
-        RestTemplate restTemplate = new RestTemplate();
-        String teamId = Long.toString(id);
-        String teamResourceUrl = nbaApiConfiguration.getTeam().getUrl();
+        WebClient webClient = WebClient.builder().baseUrl(nbaApiConfiguration.getTeamUrl()).build();
+        WebClient.UriSpec<WebClient.RequestBodySpec> uriSpec = webClient.method(HttpMethod.GET);
 
-        teamResourceUrl += teamId;
+        WebClient.RequestBodySpec bodySpec = uriSpec.uri("/{id}",id);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(teamResourceUrl, String.class);
+        WebClient.RequestHeadersSpec<?> headersSpec = bodySpec.bodyValue("data");
 
-        if (response.getStatusCode() == HttpStatus.OK){
-            return NBATeamDTO.convertToDto(response);
-        }else{
-            return null;
-        }
+        WebClient.ResponseSpec responseSpec = headersSpec.header(HttpHeaders.CONTENT_TYPE,
+                MediaType.APPLICATION_JSON_VALUE).retrieve();
+
+        Mono<String> response = responseSpec.bodyToMono(String.class);
+        return NBATeamDTO.convertToDto(response);
+
     }
 }
