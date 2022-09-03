@@ -38,7 +38,10 @@ public class NBATeamDTO {
 
     public static NBATeamDTO convertToDto(Mono<String> monoResponse){
         ObjectMapper mapper = new ObjectMapper();
-        String response = monoResponse.toString();
+        String response = monoResponse.block();
+
+        System.out.println(response);
+
         try {
             JsonNode root = mapper.readTree(response);
             return new NBATeamDTO(root.path("id").asLong(), root.path("name").asText(),

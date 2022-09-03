@@ -3,6 +3,7 @@ package com.example.student.service;
 import com.example.student.configuration.NbaApiConfiguration;
 import com.example.student.dto.NBAPlayerDTO;
 import com.example.student.dto.NBATeamDTO;
+import com.example.student.exception.NoContentException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -43,12 +44,21 @@ public class ForeignAPIService {
 
         WebClient.RequestBodySpec bodySpec = uriSpec.uri("/{id}",id);
 
-        WebClient.RequestHeadersSpec<?> headersSpec = bodySpec.bodyValue("data");
+        WebClient.RequestHeadersSpec<?> headersSpec = bodySpec.bodyValue("");
 
         WebClient.ResponseSpec responseSpec = headersSpec.header(HttpHeaders.CONTENT_TYPE,
                 MediaType.APPLICATION_JSON_VALUE).retrieve();
 
-        Mono<String> response = responseSpec.bodyToMono(String.class);
+        Mono<String> response = headersSpec.exchangeToMono(clientResponse -> {
+            if(clientResponse.statusCode().equals(HttpStatus.OK)){
+                return clientResponse.bodyToMono(String.class);
+            }else{
+                System.out.println(clientResponse.statusCode());
+                throw new NoContentException();
+            }
+        });
+//        Mono<String> response = responseSpec.bodyToMono(String.class);
+
         return NBATeamDTO.convertToDto(response);
 
     }
