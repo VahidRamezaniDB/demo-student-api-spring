@@ -9,12 +9,6 @@ public class SchoolDTO {
     private String managerName;
     private String topStudentName;
 
-    private SchoolDTO(String name, String managerName, String topStudentName) {
-        this.name = name;
-        this.managerName = managerName;
-        this.topStudentName = topStudentName;
-    }
-
     public String getName() {
         return name;
     }
@@ -27,7 +21,15 @@ public class SchoolDTO {
         return topStudentName;
     }
 
-    public static SchoolDTO convertToDto(School school, Student top){
-        return new SchoolDTO(school.getName(), school.getManager().getName(), top.getName());
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setManagerName(String managerName) {
+        this.managerName = managerName;
+    }
+
+    public void setTopStudentName(String topStudentName) {
+        this.topStudentName = topStudentName;
     }
 }

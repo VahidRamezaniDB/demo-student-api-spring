@@ -12,7 +12,7 @@ public class NBAPlayerDTO {
     private String position;
     private String teamName;
 
-    private NBAPlayerDTO(long id, String firstName, String lastName, String position, String teamName) {
+    public NBAPlayerDTO(long id, String firstName, String lastName, String position, String teamName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -40,17 +40,4 @@ public class NBAPlayerDTO {
         return teamName;
     }
 
-    public static NBAPlayerDTO convertToDto(ResponseEntity<String> response){
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            JsonNode root = mapper.readTree(response.getBody());
-            return new NBAPlayerDTO(root.path("id").asLong(), root.path("first_name").asText(),
-                    root.path("last_name").asText(), root.path("position").asText(),
-                    root.path("team").path("name").asText());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 }

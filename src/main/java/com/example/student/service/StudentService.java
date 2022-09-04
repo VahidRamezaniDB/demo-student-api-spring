@@ -1,5 +1,6 @@
 package com.example.student.service;
 
+import com.example.student.dto.GeneralMapper;
 import com.example.student.dto.TopStudentDTO;
 import com.example.student.exception.InternalServerException;
 import com.example.student.exception.NoContentException;
@@ -9,9 +10,6 @@ import com.example.student.model.School;
 import com.example.student.model.Student;
 import com.example.student.repository.SchoolRepository;
 import com.example.student.repository.StudentRepository;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -26,10 +24,13 @@ public class StudentService {
     private StudentRepository studentRepository;
     private EntityManager entityManager;
     private SchoolRepository schoolRepository;
-    public StudentService(StudentRepository studentRepository, EntityManager entityManager, SchoolRepository schoolRepository) {
+    private GeneralMapper mapper;
+    public StudentService(StudentRepository studentRepository, EntityManager entityManager,
+                          SchoolRepository schoolRepository, GeneralMapper mapper) {
         this.studentRepository = studentRepository;
         this.entityManager = entityManager;
         this.schoolRepository = schoolRepository;
+        this.mapper = mapper;
     }
 
     public List<Student> getAllStudents(){
@@ -156,7 +157,7 @@ public class StudentService {
         List<Student>  students = query.getResultList();
         Stream<Student> studentStream = students.stream().filter(student -> student.getGrade() > 15);
         List<TopStudentDTO> ret = studentStream.
-                map(student -> TopStudentDTO.convertToDto(student.getName(),student.getSchool()))
+                map(student -> mapper.topStudentDtoConvertor(student.getName(),student.getSchool()))
                 .collect(Collectors.toList());
         return ret;
 

@@ -11,12 +11,6 @@ public class TopStudentDTO {
     private String schoolName;
     private List<Student> students;
 
-    private TopStudentDTO(String studentName, String schoolName, List<Student> students) {
-        this.studentName = studentName;
-        this.schoolName = schoolName;
-        this.students = students;
-    }
-
     public String getStudentName() {
         return studentName;
     }
@@ -29,7 +23,15 @@ public class TopStudentDTO {
         return students;
     }
 
-    public static TopStudentDTO convertToDto(String studentName, School school){
-        return new TopStudentDTO(studentName,school.getName(), school.getStudents());
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 }

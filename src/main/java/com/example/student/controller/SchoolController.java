@@ -1,5 +1,6 @@
 package com.example.student.controller;
 
+import com.example.student.dto.GeneralMapper;
 import com.example.student.dto.SchoolDTO;
 import com.example.student.dto.StudentDTO;
 import com.example.student.model.School;
@@ -21,9 +22,12 @@ import java.util.List;
 public class SchoolController {
 
     private final SchoolService schoolService;
+    private GeneralMapper mapper;
 
-    public SchoolController(SchoolService schoolService) {
+    public SchoolController(SchoolService schoolService, GeneralMapper mapper) {
+
         this.schoolService = schoolService;
+        this.mapper = mapper;
     }
 
     @GetMapping("/all")
@@ -41,7 +45,7 @@ public class SchoolController {
         List<Student> students = schoolService.getStudents(id);
         List<StudentDTO> sdto = new LinkedList<>();
         for (Student stu : students){
-            sdto.add(StudentDTO.convertToDto(stu));
+            sdto.add(mapper.student2StudentDto(stu));
         }
         return new ResponseEntity<>(sdto, HttpStatus.OK);
     }
@@ -49,7 +53,7 @@ public class SchoolController {
     @GetMapping("/{id}/top-student")
     public ResponseEntity<SchoolDTO> schoolTopStudent(@PathVariable long id){
         School school = schoolService.getSchoolById(id);
-        SchoolDTO dto = SchoolDTO.convertToDto(school, schoolService.getTopStudent(id));
+        SchoolDTO dto = mapper.getSchoolDto(school, schoolService.getTopStudent(id));
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

@@ -6,11 +6,6 @@ public class StudentDTO {
     private String name;
     private double grade;
 
-    private StudentDTO(String name, double grade) {
-        this.name = name;
-        this.grade = grade;
-    }
-
     public String getName() {
         return name;
     }
@@ -19,7 +14,11 @@ public class StudentDTO {
         return grade;
     }
 
-    public static StudentDTO convertToDto(Student student){
-        return new StudentDTO(student.getName(), student.getGrade());
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setGrade(double grade) {
+        this.grade = grade;
     }
 }
