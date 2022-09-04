@@ -1,9 +1,12 @@
 package com.example.student.service;
 
+import com.example.student.model.User;
 import com.example.student.repository.UserRepository;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,4 +23,5 @@ public class DatabaseUserDetailService implements UserDetailsService {
         return userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid username."));
     }
+
 }
