@@ -20,8 +20,14 @@ public class DatabaseUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findUserByUsername(username)
+        User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid username."));
+        user.setPassword(passwordEncoder().encode(user.getPassword()));
+        return user;
+    }
+
+    public BCryptPasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 }
