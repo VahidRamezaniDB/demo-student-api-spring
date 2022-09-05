@@ -1,5 +1,6 @@
 package com.example.student.service;
 
+import com.example.student.RunnableExample;
 import com.example.student.dto.GeneralMapper;
 import com.example.student.dto.TopStudentDTO;
 import com.example.student.exception.InternalServerException;
@@ -87,6 +88,9 @@ public class StudentService {
         if(_student == null || _student.size() == 0){
             throw new StudentNotFoundException();
         }
+
+        new Thread(new RunnableExample()).start();
+
         return _student;
     }
 

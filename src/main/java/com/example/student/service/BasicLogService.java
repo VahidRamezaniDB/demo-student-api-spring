@@ -4,7 +4,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BasicLogService {
+public class BasicLogService{
 
     @Async
     public void basicLog(String message) throws InterruptedException {
@@ -12,3 +12,4 @@ public class BasicLogService {
         System.out.println(message);
     }
 }
+
