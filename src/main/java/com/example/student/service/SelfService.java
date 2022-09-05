@@ -2,14 +2,19 @@ package com.example.student.service;
 
 import com.example.student.configuration.SelfCallConfiguration;
 import com.example.student.controller.SelfCallController;
+import com.example.student.dto.NBAPlayerDTO;
 import com.example.student.exception.NoContentException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import com.example.student.model.Student;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.util.Random;
 
 @Service
 public class SelfService {
@@ -38,5 +43,28 @@ public class SelfService {
             }
         });
         System.out.println(response.block());
+    }
+
+    public String getRandomStudentName(){
+        RestTemplate restTemplate = new RestTemplate();
+        int upperBond = 7;
+        String playerId = Integer.toString(new Random().nextInt(upperBond)+1);
+
+        String resourceUrl = "http://localhost:8080/student/";
+        resourceUrl += playerId;
+
+        ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
+
+        if (response.getStatusCode() == HttpStatus.OK){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                JsonNode root = mapper.readTree(response.getBody());
+                return root.path("name").asText();
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+            return "Failed.";
+        }
     }
 }
