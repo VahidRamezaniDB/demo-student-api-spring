@@ -25,12 +25,15 @@ public class StudentService {
     private EntityManager entityManager;
     private SchoolRepository schoolRepository;
     private GeneralMapper mapper;
+    private BasicLogService logger;
     public StudentService(StudentRepository studentRepository, EntityManager entityManager,
-                          SchoolRepository schoolRepository, GeneralMapper mapper) {
+                          SchoolRepository schoolRepository, GeneralMapper mapper,
+                          BasicLogService logger) {
         this.studentRepository = studentRepository;
         this.entityManager = entityManager;
         this.schoolRepository = schoolRepository;
         this.mapper = mapper;
+        this.logger = logger;
     }
 
     public List<Student> getAllStudents(){
@@ -44,6 +47,13 @@ public class StudentService {
         if(_students.size() == 0){
             throw new NoContentException();
         }
+
+        try {
+            logger.basicLog("Selection of all students occurred.");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         return _students;
     }
 
@@ -57,6 +67,13 @@ public class StudentService {
         if(_student == null){
             throw new StudentNotFoundException();
         }
+
+        try {
+            logger.basicLog("Selection of a student occurred.");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         return _student;
     }
 
@@ -181,4 +198,5 @@ public class StudentService {
 //                .collect(Collectors.toMap(School::getName, School::getStudents,
 //                        (existing, replacement) -> existing));
     }
+
 }
