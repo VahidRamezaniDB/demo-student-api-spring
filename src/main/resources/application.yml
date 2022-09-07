@@ -2,6 +2,22 @@ server:
   port: 8080
 
 spring:
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+  rabbitmq:
+    host: localhost
+    virtual-host: /
+    port: 5672
+    username: guest
+    password: guest
+    template:
+      routing-key: rabbitmq.routingkey
+      exchange: rabbitmq.exchange
+      reply-timeout: 60000
+      default-receive-queue: myQueue
   datasource:
     url: jdbc:postgresql://localhost:5432/my_db
     username: postgres
