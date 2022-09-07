@@ -11,6 +11,9 @@ import com.example.student.model.School;
 import com.example.student.model.Student;
 import com.example.student.repository.SchoolRepository;
 import com.example.student.repository.StudentRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -58,6 +61,7 @@ public class StudentService {
         return _students;
     }
 
+
     public Student getStudentById(long id){
         Student _student;
         try{
@@ -78,6 +82,7 @@ public class StudentService {
         return _student;
     }
 
+    @Cacheable(value = "students", key = "#name")
     public List<Student> getStudentByName(String name){
         List<Student> _student;
         try{
@@ -90,10 +95,11 @@ public class StudentService {
         }
 
         new Thread(new RunnableExample()).start();
-
+        System.out.println("Get student with name: " + name);
         return _student;
     }
 
+    @CachePut(value = "students", key = "#student.id")
     public Student registerStudent(Student student){
         try{
             return studentRepository.save(
@@ -103,6 +109,7 @@ public class StudentService {
         }
     }
 
+    @CachePut(value = "students", key = "#id")
     public Student updateStudent(long id, Student student){
         try {
             Optional<Student> _student = studentRepository.findById(id);
@@ -120,6 +127,7 @@ public class StudentService {
         }
     }
 
+    @CacheEvict(value = "students",allEntries = true)
     public Student deleteStudentById(long id){
         try{
             Student _student = studentRepository.getStudentById(id);
