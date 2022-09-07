@@ -71,4 +71,14 @@ public class Student {
     public School getSchool() {
         return school;
     }
+
+    @Override
+    public String toString() {
+        String str = "";
+        str += "ID: " + this.getId() + "\n";
+        str += "Name: " + this.getName() + "\n";
+        str += "Age: " + this.getAge() + "\n";
+        str += "Grade: " + this.getGrade();
+        return str;
+    }
 }
