@@ -11,6 +11,9 @@ import com.example.student.model.School;
 import com.example.student.model.Student;
 import com.example.student.repository.SchoolRepository;
 import com.example.student.repository.StudentRepository;
+import org.redisson.Redisson;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,14 +33,16 @@ public class StudentService {
     private SchoolRepository schoolRepository;
     private GeneralMapper mapper;
     private BasicLogService logger;
+    private RedissonClient redissonClient;
     public StudentService(StudentRepository studentRepository, EntityManager entityManager,
                           SchoolRepository schoolRepository, GeneralMapper mapper,
-                          BasicLogService logger) {
+                          BasicLogService logger, RedissonClient redissonClient) {
         this.studentRepository = studentRepository;
         this.entityManager = entityManager;
         this.schoolRepository = schoolRepository;
         this.mapper = mapper;
         this.logger = logger;
+        this.redissonClient = redissonClient;
     }
 
     public List<Student> getAllStudents(){
@@ -194,21 +199,16 @@ public class StudentService {
 
     public Map<String, List<Student>> getTopStudentsMap(){
 
-//        List<School> temp = studentRepository.findAll().stream().filter(student -> student.getGrade() > 15)
-//                .map(Student::getSchool).collect(Collectors.toList());
-//        return temp.stream().collect(Collectors.toMap(School::getName, School::getStudents,
-//                (existing, replacement) -> existing));
+        RMap<String, List<Student>> rMap = redissonClient.getMap("topStudentsMap");
 
-        return studentRepository.getAllStudents().stream().filter(student -> student.getGrade() > 15)
+        Map<String, List<Student>> map = studentRepository.getAllStudents().stream().filter(student -> student.getGrade() > 15)
                 .map(Student::getSchool)
                 .collect(Collectors.toMap(School::getName,
                         school -> schoolRepository.getSchoolWithStudentsByID(school.getId()).getStudents(),
                         (existing, replacement) -> existing));
-//
-//        return studentRepository.findAll().stream().filter(student -> student.getGrade() > 15)
-//                .map(Student::getSchool)
-//                .collect(Collectors.toMap(School::getName, School::getStudents,
-//                        (existing, replacement) -> existing));
+
+        rMap.putAll(map);
+        return map;
     }
 
 }
