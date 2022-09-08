@@ -9,15 +9,12 @@ spring:
     port: 6379
   rabbitmq:
     host: localhost
-    virtual-host: /
     port: 5672
     username: guest
     password: guest
+    dynamic: true
     template:
-      routing-key: rabbitmq.routingkey
-      exchange: rabbitmq.exchange
-      reply-timeout: 60000
-      default-receive-queue: myQueue
+      reply-timeout: 30000
   datasource:
     url: jdbc:postgresql://localhost:5432/my_db
     username: postgres

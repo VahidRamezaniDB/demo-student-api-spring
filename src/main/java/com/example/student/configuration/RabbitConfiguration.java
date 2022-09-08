@@ -1,15 +1,13 @@
 package com.example.student.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.amqp.core.AmqpAdmin;
+import com.example.student.repository.StudentRepository;
+import com.example.student.service.StudentRemoteService;
+import com.example.student.service.StudentRemoteServiceImpl;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.remoting.service.AmqpInvokerServiceExporter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.context.annotation.Bean;
@@ -19,28 +17,20 @@ import org.springframework.context.annotation.Bean;
 public class RabbitConfiguration {
 
     private String host;
-    private String virtualHost;
     private Integer port;
     private String username;
     private String password;
-    private final String queueName;
 
 
-    public RabbitConfiguration(String host, String virtualHost, Integer port, String username, String password) {
+    public RabbitConfiguration(String host, Integer port, String username, String password) {
         this.host = host;
-        this.virtualHost = virtualHost;
         this.port = port;
         this.username = username;
         this.password = password;
-        this.queueName = "myQueue";
     }
 
     public String getHost() {
         return host;
-    }
-
-    public String getVirtualHost() {
-        return virtualHost;
     }
 
     public Integer getPort() {
@@ -55,16 +45,8 @@ public class RabbitConfiguration {
         return password;
     }
 
-    public String getQueueName() {
-        return queueName;
-    }
-
     public void setHost(String host) {
         this.host = host;
-    }
-
-    public void setVirtualHost(String virtualHost) {
-        this.virtualHost = virtualHost;
     }
 
     public void setPort(Integer port) {
@@ -80,40 +62,32 @@ public class RabbitConfiguration {
     }
 
     @Bean
+    public StudentRemoteService studentRemoteService(StudentRepository repository){
+        return new StudentRemoteServiceImpl(repository);
+    }
+
+    @Bean
     public Queue queue(){
-        return new Queue(queueName, false);
+        return new Queue("myQueue");
     }
 
     @Bean
-    public MessageConverter jsonMessageConverter(){
-        ObjectMapper objectMapper = new ObjectMapper();
-        return new Jackson2JsonMessageConverter(objectMapper);
+    public AmqpInvokerServiceExporter exporter(StudentRemoteService serviceImpl , AmqpTemplate template){
+        AmqpInvokerServiceExporter exporter = new AmqpInvokerServiceExporter();
+        exporter.setServiceInterface(StudentRemoteService.class);
+        exporter.setService(serviceImpl);
+        exporter.setAmqpTemplate(template);
+        return exporter;
     }
 
     @Bean
-    public ConnectionFactory connectionFactory(){
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.setVirtualHost(virtualHost);
-        connectionFactory.setHost(host);
-        connectionFactory.setUsername(username);
-        connectionFactory.setPassword(password);
-        return connectionFactory;
-    }
-
-    @Bean
-    public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter jsonMessageConverter
-    , Queue queue){
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setDefaultReceiveQueue(queueName);
-        rabbitTemplate.setMessageConverter(jsonMessageConverter);
-        rabbitTemplate.setReplyAddress(queue.getName());
-        rabbitTemplate.setUseDirectReplyToContainer(false);
-        return rabbitTemplate;
-    }
-
-    @Bean
-    public AmqpAdmin amqpAdmin(ConnectionFactory connectionFactory){
-        return new RabbitAdmin(connectionFactory);
+    public SimpleMessageListenerContainer listener(ConnectionFactory connectionFactory,
+                                                   AmqpInvokerServiceExporter exporter,
+                                                   Queue queue){
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
+        container.setMessageListener(exporter);
+        container.setQueueNames(queue.getName());
+        return container;
     }
 
 }
