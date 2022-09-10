@@ -1,16 +1,11 @@
-package com.example.student.dto;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.ResponseEntity;
+package com.example.student.model.dto;
 
 public class NBAPlayerDTO {
-    private long id;
-    private String firstName;
-    private String lastName;
-    private String position;
-    private String teamName;
+    private final long id;
+    private final String firstName;
+    private final String lastName;
+    private final String position;
+    private final String teamName;
 
     public NBAPlayerDTO(long id, String firstName, String lastName, String position, String teamName) {
         this.id = id;

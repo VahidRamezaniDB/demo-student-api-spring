@@ -1,19 +1,15 @@
-package com.example.student.configuration;
+package com.example.student.bean;
 
+import com.example.student.configuration.MinioConfiguration;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
-import io.minio.errors.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 @Component
 public class MinioBeanPool {
 
-    private MinioConfiguration minioConfiguration;
+    private final MinioConfiguration minioConfiguration;
 
     public MinioBeanPool(MinioConfiguration minioConfiguration) {
         this.minioConfiguration = minioConfiguration;

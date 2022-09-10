@@ -1,17 +1,11 @@
-package com.example.student.dto;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.ResponseEntity;
-import reactor.core.publisher.Mono;
+package com.example.student.model.dto;
 
 public class NBATeamDTO {
 
-    private long id;
-    private String name;
-    private String fullName;
-    private String city;
+    private final long id;
+    private final String name;
+    private final String fullName;
+    private final String city;
 
     public NBATeamDTO(long id, String name, String fullName, String city) {
         this.id = id;

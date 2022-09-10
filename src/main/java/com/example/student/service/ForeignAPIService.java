@@ -1,8 +1,8 @@
 package com.example.student.service;
 
 import com.example.student.configuration.NbaApiConfiguration;
-import com.example.student.dto.NBAPlayerDTO;
-import com.example.student.dto.NBATeamDTO;
+import com.example.student.model.dto.NBAPlayerDTO;
+import com.example.student.model.dto.NBATeamDTO;
 import com.example.student.exception.NoContentException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,7 +19,7 @@ public class ForeignAPIService {
 
     @Value("${nba.player_url}")
     private String resourceUrl;
-    private NbaApiConfiguration nbaApiConfiguration;
+    private final NbaApiConfiguration nbaApiConfiguration;
 
     public ForeignAPIService(NbaApiConfiguration nbaApiConfiguration) {
         this.nbaApiConfiguration = nbaApiConfiguration;

@@ -1,10 +1,6 @@
 package com.example.student.service;
 
-import com.example.student.configuration.SelfCallConfiguration;
-import com.example.student.controller.SelfCallController;
-import com.example.student.dto.NBAPlayerDTO;
 import com.example.student.exception.NoContentException;
-import com.example.student.model.Student;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,12 +14,6 @@ import java.util.Random;
 
 @Service
 public class SelfService {
-
-    private SelfCallConfiguration configuration;
-
-    public SelfService(SelfCallConfiguration configuration) {
-        this.configuration = configuration;
-    }
 
     public void callSelfApi(long id){
 //        WebClient webClient = WebClient.builder().baseUrl(configuration.getStudentUrl()).build();

@@ -1,22 +1,18 @@
 package com.example.student.controller;
 
-import com.example.student.dto.TopStudentDTO;
+import com.example.student.model.dto.TopStudentDTO;
 import com.example.student.exception.AccessForbiddenException;
 import com.example.student.model.Manager;
 import com.example.student.model.School;
 import com.example.student.model.Student;
-import com.example.student.repository.StudentRepository;
 import com.example.student.service.StudentService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student")

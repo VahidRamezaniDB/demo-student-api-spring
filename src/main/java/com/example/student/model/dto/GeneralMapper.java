@@ -1,4 +1,4 @@
-package com.example.student.dto;
+package com.example.student.model.dto;
 
 import com.example.student.model.School;
 import com.example.student.model.Student;

@@ -1,7 +1,7 @@
 package com.example.student.controller;
 
-import com.example.student.dto.NBAPlayerDTO;
-import com.example.student.dto.NBATeamDTO;
+import com.example.student.model.dto.NBAPlayerDTO;
+import com.example.student.model.dto.NBATeamDTO;
 import com.example.student.service.ForeignAPIService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

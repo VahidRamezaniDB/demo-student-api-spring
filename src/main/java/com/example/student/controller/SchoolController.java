@@ -1,8 +1,8 @@
 package com.example.student.controller;
 
-import com.example.student.dto.GeneralMapper;
-import com.example.student.dto.SchoolDTO;
-import com.example.student.dto.StudentDTO;
+import com.example.student.model.dto.GeneralMapper;
+import com.example.student.model.dto.SchoolDTO;
+import com.example.student.model.dto.StudentDTO;
 import com.example.student.model.School;
 import com.example.student.model.Student;
 import com.example.student.service.SchoolService;
@@ -22,7 +22,7 @@ import java.util.List;
 public class SchoolController {
 
     private final SchoolService schoolService;
-    private GeneralMapper mapper;
+    private final GeneralMapper mapper;
 
     public SchoolController(SchoolService schoolService, GeneralMapper mapper) {
 

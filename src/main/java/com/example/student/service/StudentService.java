@@ -1,8 +1,8 @@
 package com.example.student.service;
 
 import com.example.student.RunnableExample;
-import com.example.student.dto.GeneralMapper;
-import com.example.student.dto.TopStudentDTO;
+import com.example.student.model.dto.GeneralMapper;
+import com.example.student.model.dto.TopStudentDTO;
 import com.example.student.exception.InternalServerException;
 import com.example.student.exception.NoContentException;
 import com.example.student.exception.StudentNotFoundException;
