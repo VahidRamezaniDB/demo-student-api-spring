@@ -36,3 +36,9 @@ nba:
 
 self:
   students_url: http://127.0.0.1:8080/student
+
+minio:
+  bucket_name: student-bucket
+  access_key: minioadmin
+  access_secret: minioadmin
+  endpoint : http://127.0.0.1:9000
