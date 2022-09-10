@@ -38,16 +38,16 @@ public class SchoolService {
     }
 
     public List<School> getSchoolByName(String name){
-        List<School> _school;
+        List<School> schools;
         try{
-            _school = schoolRepository.findByName(name);
+            schools = schoolRepository.findByName(name);
         }catch (Exception e){
             throw new InternalServerException();
         }
-        if(_school == null || _school.size() == 0){
+        if(schools == null || schools.size() == 0){
             throw new StudentNotFoundException();
         }
-        return _school;
+        return schools;
     }
 
     public List<Student> getStudents(long id){

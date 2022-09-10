@@ -11,7 +11,6 @@ import com.example.student.model.School;
 import com.example.student.model.Student;
 import com.example.student.repository.SchoolRepository;
 import com.example.student.repository.StudentRepository;
-import org.redisson.Redisson;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.cache.annotation.CacheEvict;
@@ -28,12 +27,12 @@ import java.util.stream.Stream;
 @Service
 public class StudentService {
 
-    private StudentRepository studentRepository;
-    private EntityManager entityManager;
-    private SchoolRepository schoolRepository;
-    private GeneralMapper mapper;
-    private BasicLogService logger;
-    private RedissonClient redissonClient;
+    private final StudentRepository studentRepository;
+    private final EntityManager entityManager;
+    private final SchoolRepository schoolRepository;
+    private final GeneralMapper mapper;
+    private final BasicLogService logger;
+    private final RedissonClient redissonClient;
     public StudentService(StudentRepository studentRepository, EntityManager entityManager,
                           SchoolRepository schoolRepository, GeneralMapper mapper,
                           BasicLogService logger, RedissonClient redissonClient) {
@@ -46,14 +45,14 @@ public class StudentService {
     }
 
     public List<Student> getAllStudents(){
-        List<Student> _students;
+        List<Student> students;
         try{
-            _students = studentRepository.findAll();
+            students = studentRepository.findAll();
         }catch (Exception e){
             throw new InternalServerException();
         }
 
-        if(_students.size() == 0){
+        if(students.size() == 0){
             throw new NoContentException();
         }
 
@@ -63,18 +62,18 @@ public class StudentService {
             throw new RuntimeException(e);
         }
 
-        return _students;
+        return students;
     }
 
 
     public Student getStudentById(long id){
-        Student _student;
+        Student student;
         try{
-            _student = studentRepository.getStudentById(id);
+            student = studentRepository.getStudentById(id);
         }catch (Exception e){
             throw new InternalServerException();
         }
-        if(_student == null){
+        if(student == null){
             throw new StudentNotFoundException();
         }
 
@@ -84,24 +83,24 @@ public class StudentService {
             throw new RuntimeException(e);
         }
 
-        return _student;
+        return student;
     }
 
     @Cacheable(value = "students", key = "#name")
     public List<Student> getStudentByName(String name){
-        List<Student> _student;
+        List<Student> students;
         try{
-            _student = studentRepository.getStudentByNameContains(name);
+            students = studentRepository.getStudentByNameContains(name);
         }catch (Exception e){
             throw new InternalServerException();
         }
-        if(_student == null || _student.size() == 0){
+        if(students == null || students.size() == 0){
             throw new StudentNotFoundException();
         }
 
         new Thread(new RunnableExample()).start();
         System.out.println("Get student with name: " + name);
-        return _student;
+        return students;
     }
 
     @CachePut(value = "students", key = "#student.id")
@@ -117,13 +116,13 @@ public class StudentService {
     @CachePut(value = "students", key = "#id")
     public Student updateStudent(long id, Student student){
         try {
-            Optional<Student> _student = studentRepository.findById(id);
-            if (_student.isPresent()) {
-                Student __student = _student.get();
-                __student.setName(student.getName());
-                __student.setAge(student.getAge());
-                __student.setGrade(student.getGrade());
-                return studentRepository.save(__student);
+            Optional<Student> optionalStudent = studentRepository.findById(id);
+            if (optionalStudent.isPresent()) {
+                Student student1 = optionalStudent.get();
+                student1.setName(student.getName());
+                student1.setAge(student.getAge());
+                student1.setGrade(student.getGrade());
+                return studentRepository.save(student1);
             }else{
                 throw new StudentNotFoundException();
             }
@@ -135,12 +134,12 @@ public class StudentService {
     @CacheEvict(value = "students",allEntries = true)
     public Student deleteStudentById(long id){
         try{
-            Student _student = studentRepository.getStudentById(id);
-            if(_student == null){
+            Student student = studentRepository.getStudentById(id);
+            if(student == null){
                 throw new StudentNotFoundException();
             }
             studentRepository.deleteById(id);
-            return _student;
+            return student;
         }catch (StudentNotFoundException e){
             throw new StudentNotFoundException();
         }catch (Exception e){
@@ -149,32 +148,32 @@ public class StudentService {
     }
 
     public School getStudentSchool(long id){
-        Student _student;
+        Student student;
         try{
-            _student = studentRepository.getStudentById(id);
+            student = studentRepository.getStudentById(id);
         }catch (Exception e){
             throw new InternalServerException();
         }
-        if(_student == null){
+        if(student == null){
             throw new StudentNotFoundException();
         }
-        return _student.getSchool();
+        return student.getSchool();
     }
 
     public List<Student> getClassmates(long id){
-        List<Student> _students;
+        List<Student> students;
         try{
             studentRepository.findById(id).orElseThrow(StudentNotFoundException::new);
-            _students = studentRepository.getClassmates(id);
+            students = studentRepository.getClassmates(id);
         }catch (StudentNotFoundException e){
             throw new StudentNotFoundException();
         }catch (Exception e){
             throw new InternalServerException();
         }
-        if(_students == null || _students.size() == 0){
+        if(students == null || students.size() == 0){
             throw new StudentNotFoundException();
         }
-        return _students;
+        return students;
     }
 
     public Manager getManager(long id){
@@ -190,10 +189,9 @@ public class StudentService {
         Query query = entityManager.createQuery("select s from Student s", Student.class);
         List<Student>  students = query.getResultList();
         Stream<Student> studentStream = students.stream().filter(student -> student.getGrade() > 15);
-        List<TopStudentDTO> ret = studentStream.
+        return studentStream.
                 map(student -> mapper.topStudentDtoConvertor(student.getName(),student.getSchool()))
                 .collect(Collectors.toList());
-        return ret;
 
     }
 
