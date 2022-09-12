@@ -1,11 +1,11 @@
 package com.example.student.service;
 
-import com.example.student.RunnableExample;
+import com.example.student.utils.RunnableExample;
 import com.example.student.model.dto.GeneralMapper;
 import com.example.student.model.dto.TopStudentDTO;
-import com.example.student.exception.InternalServerException;
-import com.example.student.exception.NoContentException;
-import com.example.student.exception.StudentNotFoundException;
+import com.example.student.controller.exception.InternalServerException;
+import com.example.student.controller.exception.NoContentException;
+import com.example.student.controller.exception.StudentNotFoundException;
 import com.example.student.model.Manager;
 import com.example.student.model.School;
 import com.example.student.model.Student;

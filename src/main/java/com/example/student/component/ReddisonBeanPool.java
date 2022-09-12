@@ -1,4 +1,4 @@
-package com.example.student.bean;
+package com.example.student.component;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

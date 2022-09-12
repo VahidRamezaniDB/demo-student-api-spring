@@ -1,4 +1,4 @@
-package com.example.student.bean;
+package com.example.student.component;
 
 import com.example.student.configuration.MinioConfiguration;
 import io.minio.MakeBucketArgs;

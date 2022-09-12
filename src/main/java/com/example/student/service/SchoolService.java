@@ -1,20 +1,17 @@
 package com.example.student.service;
 
-import com.example.student.exception.InternalServerException;
-import com.example.student.exception.InvalidArgument;
-import com.example.student.exception.NoContentException;
-import com.example.student.exception.StudentNotFoundException;
+import com.example.student.controller.exception.InternalServerException;
+import com.example.student.controller.exception.InvalidArgument;
+import com.example.student.controller.exception.NoContentException;
+import com.example.student.controller.exception.StudentNotFoundException;
 import com.example.student.model.School;
 import com.example.student.model.Student;
-import com.example.student.model.dto.SchoolDistanceDTO;
 import com.example.student.repository.SchoolRepository;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

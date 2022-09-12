@@ -1,4 +1,4 @@
-package com.example.student.bean;
+package com.example.student.component;
 
 import org.locationtech.jts.geom.GeometryFactory;
 import org.n52.jackson.datatype.jts.JtsModule;
@@ -12,8 +12,5 @@ public class JTSBeanPool {
     public JtsModule jtsModule(){
         return new JtsModule();
     }
-
-    @Bean
-    public GeometryFactory shapeFactory(){ return new GeometryFactory();}
 
 }

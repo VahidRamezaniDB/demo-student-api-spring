@@ -1,4 +1,4 @@
-package com.example.student;
+package com.example.student.utils;
 
 public class RunnableExample implements Runnable{
 

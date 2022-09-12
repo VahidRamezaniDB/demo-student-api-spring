@@ -1,6 +1,6 @@
 package com.example.student.service;
 
-import com.example.student.exception.NoContentException;
+import com.example.student.controller.exception.NoContentException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

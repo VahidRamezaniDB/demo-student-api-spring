@@ -1,7 +1,7 @@
 package com.example.student.controller;
 
 import com.example.student.model.dto.TopStudentDTO;
-import com.example.student.exception.AccessForbiddenException;
+import com.example.student.controller.exception.AccessForbiddenException;
 import com.example.student.model.Manager;
 import com.example.student.model.School;
 import com.example.student.model.Student;

@@ -1,4 +1,4 @@
-package com.example.student.bean;
+package com.example.student.component;
 
 import com.example.student.repository.StudentRepository;
 import com.example.student.service.StudentRemoteService;
