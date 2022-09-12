@@ -2,10 +2,9 @@ package com.example.student;
 
 import com.example.student.model.School;
 import com.example.student.model.Student;
-import com.example.student.service.ForeignAPIService;
-import com.example.student.service.SchoolService;
-import com.example.student.service.SelfService;
-import com.example.student.service.StudentService;
+import com.example.student.service.*;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Polygon;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -19,15 +18,19 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class CustomRunner implements CommandLineRunner {
 
-    private StudentService studentService;
-    private SchoolService schoolService;
-    private SelfService selfService;
-    public CustomRunner(StudentService studentService, SchoolService schoolService,
-                        SelfService selfService) {
+    private final StudentService studentService;
+    private final SchoolService schoolService;
+    private final SelfService selfService;
+    private final GeometryShapesService geometryShapesService;
+
+    public CustomRunner(StudentService studentService, SchoolService schoolService
+            ,SelfService selfService, GeometryShapesService geometryShapesService) {
         this.studentService = studentService;
         this.schoolService = schoolService;
         this.selfService = selfService;
+        this.geometryShapesService = geometryShapesService;
     }
+
 
     @Override
     public void run(String... args) throws Exception {
@@ -86,5 +89,27 @@ public class CustomRunner implements CommandLineRunner {
             executor.execute(runnableTask);
         }
         executor.shutdown();
+    }
+
+    @PostConstruct
+    public void linesAndPolygons(){
+        LineString line1 = (LineString) geometryShapesService.createLine(0,0,6,6);
+        LineString line2 = (LineString) geometryShapesService.createLine(0,0,5,0);
+        LineString line3 = (LineString) geometryShapesService.createLine(0,0,3, 3);
+        LineString line4 = (LineString) geometryShapesService.createLine(0,2,4.5, 2);
+        LineString line5 = (LineString) geometryShapesService.createLine(0,2,6, 2);
+        Polygon polygon1 = (Polygon) geometryShapesService.createPolygon(
+                new double[]{1, 2, 3, 4, 3, 2, 1},
+                new double[]{2, 1, 2, 3, 5, 3, 2});
+        Polygon polygon2 = (Polygon) geometryShapesService.createPolygon(
+                new double[]{1,1,5,5,4,4,3,3,1},
+                new double[]{1,4,4,1,1,3,3,1,1});
+        System.out.println(geometryShapesService.doesLineCrossPolygon(line1, polygon1));
+        System.out.println(geometryShapesService.doesLineCrossPolygon(line2, polygon1));
+        System.out.println(geometryShapesService.doesLineTraversePolygon(line1, polygon1));
+        System.out.println(geometryShapesService.doesLineTraversePolygon(line3, polygon1));
+        System.out.println(geometryShapesService.doesLineTraversePolygon(line4, polygon2));
+        System.out.println(geometryShapesService.doesLineTraversePolygon(line5, polygon2));
+
     }
 }
