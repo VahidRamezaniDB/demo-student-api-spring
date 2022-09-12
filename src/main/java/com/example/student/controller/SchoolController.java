@@ -1,17 +1,12 @@
 package com.example.student.controller;
 
-import com.example.student.model.dto.GeneralMapper;
-import com.example.student.model.dto.SchoolDTO;
-import com.example.student.model.dto.StudentDTO;
+import com.example.student.model.dto.*;
 import com.example.student.model.School;
 import com.example.student.model.Student;
 import com.example.student.service.SchoolService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.util.LinkedList;
@@ -55,5 +50,25 @@ public class SchoolController {
         School school = schoolService.getSchoolById(id);
         SchoolDTO dto = mapper.getSchoolDto(school, schoolService.getTopStudent(id));
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/location")
+    public ResponseEntity<LocationDTO> getSchoolLocation(@PathVariable long id){
+        return ResponseEntity.ok(mapper.point2LocationDto(schoolService.getSchoolLocationById(id)));
+    }
+
+    @PostMapping("/{id}/location")
+    public ResponseEntity<SchoolLocDTO> setSchoolLocation(@PathVariable long id, @RequestBody LocationDTO location){
+        String loc = "POINT (" + location.getLatitude() + " " + location.getLongitude() + ")";
+        School school = schoolService.setLocationForSchoolById(id, loc);
+        return ResponseEntity.ok(mapper.school2SchoolLocDto(school));
+    }
+
+    @GetMapping("/{id}/distance")
+    public ResponseEntity<SchoolDistanceDTO> getDistanceBetweenSchools(@PathVariable long id, @RequestParam long destId){
+        double distance = schoolService.getDistance(id, destId);
+        return ResponseEntity.ok(mapper.getDistanceDto(schoolService.getSchoolById(id)
+                ,schoolService.getSchoolById(destId)
+                ,distance));
     }
 }

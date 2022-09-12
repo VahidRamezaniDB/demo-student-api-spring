@@ -1,8 +1,7 @@
 package com.example.student.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,8 +9,8 @@ import java.util.List;
 @NamedEntityGraph(name = "School.students",
     attributeNodes = @NamedAttributeNode("students"))
 @org.hibernate.annotations.NamedNativeQuery(name = "School.findTopStudent",
-query = "SELECT *  FROM student WHERE school_id = :id ORDER BY grade DESC LIMIT 1",
-resultClass = Student.class)
+        query = "SELECT *  FROM student WHERE school_id = :id ORDER BY grade DESC LIMIT 1",
+        resultClass = Student.class)
 @Entity
 @Table(name = "school")
 public class School {
@@ -27,14 +26,14 @@ public class School {
     private String address;
 
     @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
-//    @JsonIgnoreProperties("school")
     @JsonManagedReference
     private List<Student> students;
 
     @OneToOne(mappedBy = "school")
-//    @JsonIgnoreProperties("school")
     @JsonManagedReference
     private Manager manager;
+
+    private Point location;
 
     public School(String name, String address, List<Student> students, Manager manager) {
         this.name = name;
@@ -43,7 +42,24 @@ public class School {
         this.manager = manager;
     }
 
+    public School(long id, String name, String address, List<Student> students, Manager manager, Point location) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.students = students;
+        this.manager = manager;
+        this.location = location;
+    }
+
     public School() {
+    }
+
+    public Point getLocation() {
+        return location;
+    }
+
+    public void setLocation(Point location) {
+        this.location = location;
     }
 
     public void setName(String name) {

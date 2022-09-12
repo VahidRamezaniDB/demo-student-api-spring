@@ -16,13 +16,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public SecurityConfiguration(DatabaseUserDetailService userDetailService) {
         this.userDetailService = userDetailService;
     }
-//
-//    @Override
-//    public void configure(HttpSecurity http)throws Exception{
-//        http.authorizeRequests()
-//                .antMatchers("/student/all").permitAll()
-//                .anyRequest().authenticated();
-//    }
+
+    @Override
+    public void configure(HttpSecurity http)throws Exception{
+        http
+                .csrf()
+                .disable()
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+                .httpBasic();
+    }
 
     @Override
     public void configure(WebSecurity web)throws Exception{

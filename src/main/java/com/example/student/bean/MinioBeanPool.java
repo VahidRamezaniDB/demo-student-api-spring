@@ -6,6 +6,8 @@ import io.minio.MinioClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 @Component
 public class MinioBeanPool {
 
@@ -23,7 +25,7 @@ public class MinioBeanPool {
                 .build();
         try {
             client.makeBucket(MakeBucketArgs.builder()
-                            .bucket(minioConfiguration.getBucketName())
+                            .bucket(minioConfiguration.getBucketName() + new Random().nextInt(1000))
                             .build());
         } catch (Exception e) {
             throw new RuntimeException(e);

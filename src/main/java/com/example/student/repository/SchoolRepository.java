@@ -2,6 +2,7 @@ package com.example.student.repository;
 
 import com.example.student.model.School;
 import com.example.student.model.Student;
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,10 @@ public interface SchoolRepository extends JpaRepository<School, Long> {
     @Query("select s from School s join fetch s.students where s.id = ?1")
     School getSchoolWithStudentsByID(long id);
 
+    @Query(value = "select CAST(st_AsText(location) as VARCHAR) from school s where s.id=:id", nativeQuery = true)
+    String getLocationById(long id);
+
+    @Query(value = "select st_distance(s1.location, s2.location) from school s1, school s2 where s1.id=:firstId AND s2.id=:secondId"
+            ,nativeQuery = true)
+    double getDistanceBetween2Schools(long firstId, long secondId);
 }
